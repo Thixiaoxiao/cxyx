@@ -13,7 +13,9 @@ def cxyx(role, path):
         file, obj = path.split(":")
 
         f = import_module(file)
-        getattr(f, obj).run()
+        worker = getattr(f, obj)
+        worker.logger.info("Worker start to work -------------------------")
+        worker.run()
 
 
 if __name__ == '__main__':

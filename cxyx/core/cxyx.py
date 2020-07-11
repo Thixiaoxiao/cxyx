@@ -99,6 +99,8 @@ class CXYX:
             if task:
                 res = "error"
                 try:
+                    self.logger.info("start to consume the task : %s ,parameter : %s -- %s " % (
+                    task["func_name"], task["args"], task["kwargs"]))
                     res = getattr(TaskBase, "task_" + task["func_name"])(*task["args"], **task["kwargs"])
                 except:
                     self.logger.error(task["func_name"] + "execute fail!")
