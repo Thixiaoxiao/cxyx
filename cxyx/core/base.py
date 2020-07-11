@@ -1,0 +1,2 @@
+class TaskBase:
+    pass
