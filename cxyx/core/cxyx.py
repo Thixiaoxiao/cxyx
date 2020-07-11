@@ -1,4 +1,5 @@
 import time
+from threading import Thread
 
 from numba import jit
 from func_timeout import func_set_timeout
@@ -90,23 +91,38 @@ class CXYX:
         # add the function : 'verb'
         setattr(func, "verb", self.verb(FUNCNAME=func.func_name))
 
-    def run(self):
-        # Open the worker
-        self._init_broker_backend()
-
+    def execute_task(self):
+        self.logger.info("Worker start to work -------------------------")
         while True:
             task = self._broker.get_task()
             if task:
                 res = "error"
                 try:
                     self.logger.info("start to consume the task : %s ,parameter : %s -- %s " % (
-                    task["func_name"], task["args"], task["kwargs"]))
+                        task["func_name"], task["args"], task["kwargs"]))
                     res = getattr(TaskBase, "task_" + task["func_name"])(*task["args"], **task["kwargs"])
                 except:
                     self.logger.error(task["func_name"] + "execute fail!")
                 finally:
+                    self.logger.info("The task : %s ,parameter : %s -- %s Finished!" % (
+                        task["func_name"], task["args"], task["kwargs"]))
                     if getattr(Config, "REDIS_BACKEND"):
                         # Save result to backend
                         self.__backend.save_result(task["id_"], res)
             else:
                 time.sleep(1)
+
+    def run(self):
+        # Open the worker
+        self._init_broker_backend()
+        self.execute_task()
+
+    def run_with_many_process(self, count):
+        self._init_broker_backend()
+        tasks = [
+            Thread(target=self.execute_task) for _ in range(count)
+        ]
+        for task in tasks:
+            task.start()
+        for task in tasks:
+            task.join()
