@@ -11,7 +11,7 @@ class Log:
         logger = logging.getLogger(name)
         logger.setLevel(level=logging.INFO)
         # 定义一个RotatingFileHandler，最多备份3个日志文件，每个日志文件最大1K
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(process)d - %(thread)d - %(message)s')
         if log_to_file:
             rHandler = RotatingFileHandler(logfile, maxBytes=1 * 1024, backupCount=3)
             rHandler.setLevel(logging.INFO)
