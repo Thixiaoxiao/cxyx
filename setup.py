@@ -11,9 +11,6 @@ def parse_requirements(filename):
     return [line for line in lineiter if line and not line.startswith("#")]
 
 
-with open(os.path.join(os.path.dirname(__file__), './VERSION.txt'), 'rb') as f:
-    version = f.read().decode('ascii').strip()
-
 setup(
     name='cxyx',
     version="0.1.2",
