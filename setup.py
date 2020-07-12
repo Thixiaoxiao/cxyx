@@ -13,7 +13,7 @@ def parse_requirements(filename):
 
 setup(
     name='cxyx',
-    version="0.1.2",
+    version="0.1.3",
     description='A mini async framework, like Celery',
     packages=find_packages(exclude=[]),
     author='chenxiyuxiao',
