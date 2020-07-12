@@ -16,7 +16,7 @@ with open(os.path.join(os.path.dirname(__file__), './VERSION.txt'), 'rb') as f:
 
 setup(
     name='cxyx',
-    version=version,
+    version="0.1.2",
     description='A mini async framework, like Celery',
     packages=find_packages(exclude=[]),
     author='chenxiyuxiao',
