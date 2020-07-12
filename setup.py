@@ -23,7 +23,7 @@ setup(
     author_email='yongyuwanshua@163.com',
     license='Apache License v2',
     package_data={'': ['*.*']},
-    url='#',
+    url='https://github.com/Thixiaoxiao/cxyx',
     install_requires=parse_requirements("requirements.txt"),
     zip_safe=False,
     classifiers=[
