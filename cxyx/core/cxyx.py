@@ -1,9 +1,11 @@
 import time
+import traceback
 from threading import Thread
-
-from numba import jit
-from func_timeout import func_set_timeout
-
+try:
+    from numba import jit
+    from func_timeout import func_set_timeout
+except:
+    pass
 from cxyx.backend import Backend
 from cxyx.backend.backend_result import BackendResult
 from cxyx.broker import Broker
@@ -45,10 +47,13 @@ class CXYX:
         self.logger.info("register task : %s " % func_name)
         task_func_name = "task_" + func_name
         if not hasattr(TaskBase, task_func_name):
-            if "up_speed" in kw and kw["up_speed"]:
-                func = jit()(func)
-            if "timeout" in kw and kw["timeout"]:
-                func = func_set_timeout(kw["timeout"])(func)
+            try:
+                if "up_speed" in kw and kw["up_speed"]:
+                    func = jit()(func)
+                if "timeout" in kw and kw["timeout"]:
+                    func = func_set_timeout(kw["timeout"])(func)
+            except:
+                traceback.print_exc()
             setattr(TaskBase, task_func_name, staticmethod(func))
         else:
             self.logger.error(
@@ -101,7 +106,10 @@ class CXYX:
                     self.logger.info("start to consume the task : %s ,parameter : %s -- %s " % (
                         task["func_name"], task["args"], task["kwargs"]))
                     res = getattr(TaskBase, "task_" + task["func_name"])(*task["args"], **task["kwargs"])
+                    self.logger.info("success to consume the task : %s ,parameter : %s -- %s " % (
+                        task["func_name"], task["args"], task["kwargs"]))
                 except:
+                    traceback.print_exc()
                     self.logger.error(task["func_name"] + "execute fail!")
                 finally:
                     self.logger.info("The task : %s ,parameter : %s -- %s Finished!" % (
