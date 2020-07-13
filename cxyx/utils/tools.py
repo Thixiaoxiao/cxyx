@@ -42,9 +42,9 @@ Welcome to use CXYX !
 @click.command()
 @click.argument('role')
 @click.argument('path')
-@click.option('--worker_number', prompt='worker_num', default=1,
+@click.option('--worker_number', default=1,
               help='The number of workers in one process.')
-# @click.option('--process_number', prompt='process_num', default=1,
+# @click.option('--process_number', default=1,
 #               help='The number of process.')
 def cxyx(role, path, worker_number,
          # process_number
