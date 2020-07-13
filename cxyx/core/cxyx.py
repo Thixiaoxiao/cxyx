@@ -110,7 +110,8 @@ class CXYX:
                         task["func_name"], task["args"], task["kwargs"]))
                 except:
                     traceback.print_exc()
-                    self.logger.error(task["func_name"] + "execute fail!")
+                    self.logger.error("fail to consume the task : %s ,parameter : %s -- %s " % (
+                        task["func_name"], task["args"], task["kwargs"]))                    
                 finally:
                     self.logger.info("The task : %s ,parameter : %s -- %s Finished!" % (
                         task["func_name"], task["args"], task["kwargs"]))
