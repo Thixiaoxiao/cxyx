@@ -44,7 +44,7 @@ class CXYX:
 
     def regist_task(self, func_name, func, kw):
         # 注册任务
-        self.logger.info("register task : %s " % func_name)
+        self.logger.info("regist the task : %s " % func_name)
         task_func_name = "task_" + func_name
         if not hasattr(TaskBase, task_func_name):
             try:
