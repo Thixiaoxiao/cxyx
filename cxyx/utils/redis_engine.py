@@ -39,7 +39,7 @@ class RedisEngine:
         self.redis_eng.lpush(key, val)
 
     def get_task(self, key):
-        return self.lpop(key)
+        return self.rpop(key)
 
     def save_result(self, key, val, expire_time):
         res = self.redis_eng.set(key, val, nx=False, px=expire_time)
