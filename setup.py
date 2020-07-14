@@ -33,7 +33,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'cxyx = cxyx.utils.tools:cxyx'
+            'cxyx = cxyx.__main__:cxyx'
         ]
     }
 )
