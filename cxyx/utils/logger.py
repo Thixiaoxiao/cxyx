@@ -10,7 +10,7 @@ class Log:
                  ):
         logger = logging.getLogger(name)
         logger.setLevel(level=logging.INFO)
-        
+        logger.handlers.clear()
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(process)d - %(thread)d - %(message)s')
         if log_to_file:
             rHandler = RotatingFileHandler(logfile, maxBytes=1 * 1024, backupCount=3)
