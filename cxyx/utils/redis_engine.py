@@ -19,9 +19,15 @@ class RedisEngine:
             )
             self.redis_eng = StrictRedis(connection_pool=conn_pool, max_connections=10, )
         elif isinstance(redis_host, list):
-            self.redis_eng = StrictRedisCluster(startup_nodes=[
-                {"host": host, "port": redis_port} for host in redis_host
-            ], decode_responses=True, password=redis_password)
+            if isinstance(redis_port, int):
+                startup_nodes = [
+                    {"host": host, "port": redis_port} for host in redis_host
+                ]
+            elif isinstance(redis_port, list):
+                startup_nodes = [
+                    {"host": host, "port": port} for host, port in zip(redis_host, redis_port)
+                ]
+            self.redis_eng = StrictRedisCluster(startup_nodes=startup_nodes, decode_responses=True, password=redis_password)
 
     def lpush(self, key, val):
         self.redis_eng.lpush(key, val)
