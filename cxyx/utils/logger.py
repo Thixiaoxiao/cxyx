@@ -10,7 +10,7 @@ class Log:
                  ):
         logger = logging.getLogger(name)
         logger.setLevel(level=logging.INFO)
-        # 定义一个RotatingFileHandler，最多备份3个日志文件，每个日志文件最大1K
+        
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(process)d - %(thread)d - %(message)s')
         if log_to_file:
             rHandler = RotatingFileHandler(logfile, maxBytes=1 * 1024, backupCount=3)
@@ -22,13 +22,7 @@ class Log:
             console.setLevel(logging.INFO)
             console.setFormatter(formatter)
             logger.addHandler(console)
-        self.__logger = logger
-        self.welcome()
-
-    def welcome(self):
-        if not hasattr(self, "_yt"):
-            self._yt = True
-            
+        self.__logger = logger                  
 
     @property
     def logger(self):
