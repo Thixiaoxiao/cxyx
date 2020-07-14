@@ -1,10 +1,11 @@
+import os
 import logging
 from logging.handlers import RotatingFileHandler
 
 
 class Log:
     def __init__(self, name=__name__,
-                 logfile="log.txt",
+                 logfile="log_%s.txt"%(os.getpid()),
                  log_to_console=True,
                  log_to_file=False
                  ):
