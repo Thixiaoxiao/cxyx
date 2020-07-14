@@ -1,6 +1,3 @@
-import os
-
-
 class Config:
     # USE Redis
     REDIS_DB = 0
@@ -20,7 +17,7 @@ class Config:
     REDIS_BACKEND = False
 
     # log
-    LOG_FILE = "CXYX_%s.txt"%(os.getpid())
+    LOG_FILE = "CXYX"
     LOG_LEVEL = "INFO"
     # Log printing to terminal
     LOG_TO_CONSOLE = True
@@ -28,6 +25,6 @@ class Config:
     LOG_TO_FILE = False
     LOG_FORMATTER_STR = '%(asctime)s - %(levelname)s - %(process)d - %(thread)d - %(message)s'
     # Maximum size of log file
-    LOG_FILE_MAX_BYTES = 1024 * 1024 *3
+    LOG_FILE_MAX_BYTES = 1024 * 1024 * 3
     # Maximum number of log files
     LOG_FILE_BACKUP_COUNT = 3
