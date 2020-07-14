@@ -1,3 +1,4 @@
+import os
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -12,9 +13,10 @@ class Log:
         formatter = logging.Formatter(
             '%(asctime)s - %(levelname)s - %(process)d - %(thread)d - %(message)s')
         if Config.LOG_TO_FILE:
-            rHandler = RotatingFileHandler(Config.LOG_FILE,
-                                           maxBytes=Config.LOG_FILE_MAX_BYTES,
-                                           backupCount=Config.LOG_FILE_BACKUP_COUNT)
+            rHandler = RotatingFileHandler(
+                Config.LOG_FILE + "_%s.log" % (os.getpid()),
+                maxBytes=Config.LOG_FILE_MAX_BYTES,
+                backupCount=Config.LOG_FILE_BACKUP_COUNT)
             rHandler.setLevel(getattr(logging, Config.LOG_LEVEL))
             rHandler.setFormatter(formatter)
             logger.addHandler(rHandler)
