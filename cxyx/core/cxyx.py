@@ -34,13 +34,12 @@ class CXYX:
     def config_from_object(self, config_dict: dict):
         for key, val in config_dict.items():
             setattr(Config, key.upper(), val)
-
-    def _init(self):
-        if not hasattr(self, "_log"):
-            self._log = True
-            log = Log()
-            time.sleep(0.2)
-            self.logger = log.logger
+        self._init()
+        
+    def _init(self):        
+        log = Log()
+        time.sleep(0.2)
+        self.logger = log.logger
 
     def regist_task(self, func_name, func, kw):
         # 注册任务
