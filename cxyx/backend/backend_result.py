@@ -18,6 +18,6 @@ class BackendResult:
     def until_get_result(self):
         while True:
             res = self.get_result()
-            if res:
+            if res is not None:
                 break
         return res
