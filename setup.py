@@ -18,7 +18,7 @@ setup(
     packages=find_packages(exclude=[]),
     author='chenxiyuxiao',
     author_email='18883325829@163.com',
-    license='Apache License v2',
+    license='BSD 2-Clause License',
     package_data={'': ['*.*']},
     url='https://github.com/Thixiaoxiao/cxyx',
     install_requires=parse_requirements("requirements.txt"),
