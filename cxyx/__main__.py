@@ -7,9 +7,10 @@
 #-------------------------------------------------------------------------------
 import click
 import sys
+import os
 from importlib import import_module
 
-# from multiprocessing import Process
+this_os = sys.platform
 
 sys.path.append("./")
 print(r"""
@@ -51,10 +52,10 @@ Welcome to use CXYX !
 @click.argument('path')
 @click.option('--worker_number', default=1,
               help='The number of workers in one process.')
-# @click.option('--process_number', default=1,
-#               help='The number of process.')
+@click.option('--process_number', default=1,
+              help='The number of process.')
 def cxyx(role, path, worker_number,
-         # process_number
+         process_number
          ):
     if role == "worker" and ":" in path:
         def parse_in_one_process(path, worker_number):
@@ -65,20 +66,21 @@ def cxyx(role, path, worker_number,
             if worker_number == 1:
                 worker.run()
             else:
-                worker.run_with_many_process(worker_number)
-
-        parse_in_one_process(path, worker_number)
-        # if process_number == 1:
-        #     parse_in_one_process(path, worker_number)
-        # else:
-        #     tasks = [
-        #         Process(target=parse_in_one_process, args=(path, worker_number))
-        #         for _ in range(process_number)
-        #     ]
-        #     for task in tasks:
-        #         task.start()
-        #     for task in tasks:
-        #         task.join()
+                worker.run_with_many_process(worker_number)        
+        if process_number == 1:
+            parse_in_one_process(path, worker_number)
+        else:
+            if "win" in this_os:
+                for _ in range(process_number):
+                    os.system(
+                        "start cxyx worker %s --worker_number=%s" % (
+                            path, worker_number)
+                    )
+            elif "linux" in this_os:
+                os.system(" & ".join([
+                    "cxyx worker %s --worker_number=%s" % (path, worker_number)
+                    for _ in range(process_number)
+                ]))
 
 
 if __name__ == '__main__':
