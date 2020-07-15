@@ -23,6 +23,7 @@ class CXYX:
             setattr(Config, "BROKER_INFO", broker_info)
         if backend_info:
             setattr(Config, "BACKEND_INFO", backend_info)
+            Config.REDIS_BACKEND = True
 
     def _init_broker_backend(self):
         # init broker and backend
