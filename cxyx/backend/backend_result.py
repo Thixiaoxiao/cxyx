@@ -13,11 +13,13 @@ class BackendResult:
 
         if res is not None:
             res = pickle.loads(res)
+        else:
+            res = "result not exist!"
         return res
 
     def until_get_result(self):
         while True:
             res = self.get_result()
-            if res is not None:
+            if res != "result not exist!":
                 break
         return res
