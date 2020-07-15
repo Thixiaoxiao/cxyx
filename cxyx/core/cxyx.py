@@ -1,6 +1,7 @@
 import time
 import traceback
 from threading import Thread
+
 try:
     from numba import jit
     from func_timeout import func_set_timeout
@@ -19,9 +20,9 @@ class CXYX:
         self.__name = name
         self._init()
         if broker_info:
-            self.config_from_object(broker_info)
+            setattr(Config, "BROKER_INFO", broker_info)
         if backend_info:
-            self.config_from_object(backend_info)
+            setattr(Config, "BACKEND_INFO", backend_info)
 
     def _init_broker_backend(self):
         # init broker and backend
@@ -35,8 +36,8 @@ class CXYX:
         for key, val in config_dict.items():
             setattr(Config, key.upper(), val)
         self._init()
-        
-    def _init(self):        
+
+    def _init(self):
         log = Log()
         time.sleep(0.2)
         self.logger = log.logger
@@ -82,12 +83,13 @@ class CXYX:
             # Add task to broker
             _id = self._broker.add_task({
                 "func_name": FUNCNAME,
-                "args":      args,
-                "kwargs":    kwargs
+                "args": args,
+                "kwargs": kwargs
             })
             # return backend obj to get result
             if Config.REDIS_BACKEND:
-                return BackendResult(_id=_id, _engine=self.__backend.backend_engine)
+                return BackendResult(_id=_id,
+                                     _engine=self.__backend.backend_engine)
 
         return inner
 
@@ -102,18 +104,23 @@ class CXYX:
             if task:
                 res = "error"
                 try:
-                    self.logger.info("start to consume the task : %s ,parameter : %s -- %s " % (
-                        task["func_name"], task["args"], task["kwargs"]))
-                    res = getattr(TaskBase, "task_" + task["func_name"])(*task["args"], **task["kwargs"])
-                    self.logger.info("success to consume the task : %s ,parameter : %s -- %s " % (
-                        task["func_name"], task["args"], task["kwargs"]))
+                    self.logger.info(
+                        "start to consume the task : %s ,parameter : %s -- %s " % (
+                            task["func_name"], task["args"], task["kwargs"]))
+                    res = getattr(TaskBase, "task_" + task["func_name"])(
+                        *task["args"], **task["kwargs"])
+                    self.logger.info(
+                        "success to consume the task : %s ,parameter : %s -- %s " % (
+                            task["func_name"], task["args"], task["kwargs"]))
                 except:
                     traceback.print_exc()
-                    self.logger.error("fail to consume the task : %s ,parameter : %s -- %s " % (
-                        task["func_name"], task["args"], task["kwargs"]))                    
+                    self.logger.error(
+                        "fail to consume the task : %s ,parameter : %s -- %s " % (
+                            task["func_name"], task["args"], task["kwargs"]))
                 finally:
-                    self.logger.info("The task : %s ,parameter : %s -- %s Finished!" % (
-                        task["func_name"], task["args"], task["kwargs"]))
+                    self.logger.info(
+                        "The task : %s ,parameter : %s -- %s Finished!" % (
+                            task["func_name"], task["args"], task["kwargs"]))
                     if getattr(Config, "REDIS_BACKEND"):
                         # Save result to backend
                         self.__backend.save_result(task["id_"], res)
