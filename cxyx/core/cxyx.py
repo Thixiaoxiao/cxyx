@@ -106,17 +106,17 @@ class CXYX:
                 res = "error"
                 try:
                     self.logger.info(
-                        "start to consume the task : %s ,parameter : %s -- %s " % (
+                        "Start to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
                     res = getattr(TaskBase, "task_" + task["func_name"])(
                         *task["args"], **task["kwargs"])
                     self.logger.info(
-                        "success to consume the task : %s ,parameter : %s -- %s " % (
+                        "Success to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
                 except:
                     traceback.print_exc()
                     self.logger.error(
-                        "fail to consume the task : %s ,parameter : %s -- %s " % (
+                        "Fail to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
                 finally:
                     self.logger.info(
