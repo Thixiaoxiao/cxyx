@@ -11,7 +11,7 @@ class Config:
     REDIS_BROKER = False
 
     # The time of result save in backend
-    RESULT_EXPIRE_TIME = 60 * 60 * 24 * 2
+    RESULT_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 2
 
     # If use redis as backend , choose True
     REDIS_BACKEND = False
