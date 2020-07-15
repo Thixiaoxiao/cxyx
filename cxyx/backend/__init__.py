@@ -8,7 +8,7 @@ class Backend:
     def _init(self):
         if hasattr(Config, "BACKEND_INFO"):
             redis_info_dict = getattr(Config, "BACKEND_INFO")
-            self._broker_engine = RedisEngine(
+            self._backend_engine = RedisEngine(
                 redis_host=redis_info_dict[
                     "redis_host"] if "redis_host" in redis_info_dict else Config.REDIS_HOST,
                 redis_port=redis_info_dict[
