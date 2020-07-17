@@ -2,6 +2,10 @@ import time
 import traceback
 from threading import Thread
 
+from cxyx.core.add_feature import do_sth_before_task, before_do_task, \
+    after_do_task, do_sth_after_task, success_do_task, do_sth_success_task, \
+    fail_do_task, do_sth_fail_task
+
 try:
     from numba import jit
     from func_timeout import func_set_timeout
@@ -97,6 +101,10 @@ class CXYX:
     def create_task(self, func):
         # add the function : 'verb'
         setattr(func, "verb", self.verb(FUNCNAME=func.func_name))
+        setattr(func, "before_do_task", before_do_task(func))
+        setattr(func, "after_do_task", after_do_task(func))
+        setattr(func, "success_do_task", success_do_task(func))
+        setattr(func, "fail_do_task", fail_do_task(func))
 
     def execute_task(self):
         self.logger.info("Worker start to work -------------------------")
@@ -104,21 +112,31 @@ class CXYX:
             task = self._broker.get_task()
             if task:
                 res = "error"
+                real_func = getattr(TaskBase, "task_" + task["func_name"])
                 try:
                     self.logger.info(
                         "Start to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
-                    res = getattr(TaskBase, "task_" + task["func_name"])(
+                    do_sth_before_task(real_func, args=task["args"],
+                                       kwargs=task["kwargs"])
+                    res = real_func(
                         *task["args"], **task["kwargs"])
                     self.logger.info(
                         "Success to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
+                    task["kwargs"]["final_result"] = res
+                    do_sth_success_task(real_func, args=task["args"],
+                                        kwargs=task["kwargs"])
                 except:
                     traceback.print_exc()
                     self.logger.error(
                         "Fail to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
+                    do_sth_fail_task(real_func, args=task["args"],
+                                     kwargs=task["kwargs"])
                 finally:
+                    do_sth_after_task(real_func, args=task["args"],
+                                      kwargs=task["kwargs"])
                     self.logger.info(
                         "The task : %s ,parameter : %s -- %s Finished!" % (
                             task["func_name"], task["args"], task["kwargs"]))
