@@ -88,8 +88,8 @@ class CXYX:
             # Add task to broker
             _id = self._broker.add_task({
                 "func_name": FUNCNAME,
-                "args": args,
-                "kwargs": kwargs
+                "args":      args,
+                "kwargs":    kwargs
             })
             # return backend obj to get result
             if Config.REDIS_BACKEND:
@@ -106,6 +106,22 @@ class CXYX:
         setattr(func, "success_do_task", success_do_task(func))
         setattr(func, "fail_do_task", fail_do_task(func))
 
+    def do_before_task(self, real_func, task):
+        do_sth_before_task(real_func, args=task["args"],
+                           kwargs=task["kwargs"])
+
+    def do_after_task(self, real_func, task):
+        do_sth_after_task(real_func, args=task["args"],
+                          kwargs=task["kwargs"])
+
+    def success_task(self, real_func, task):
+        do_sth_success_task(real_func, args=task["args"],
+                            kwargs=task["kwargs"])
+
+    def fail_task(self, real_func, task):
+        do_sth_fail_task(real_func, args=task["args"],
+                         kwargs=task["kwargs"])
+
     def execute_task(self):
         self.logger.info("Worker start to work -------------------------")
         while True:
@@ -117,26 +133,22 @@ class CXYX:
                     self.logger.info(
                         "Start to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
-                    do_sth_before_task(real_func, args=task["args"],
-                                       kwargs=task["kwargs"])
+                    self.do_before_task(real_func, task)
                     res = real_func(
                         *task["args"], **task["kwargs"])
                     self.logger.info(
                         "Success to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
                     task["kwargs"]["final_result"] = res
-                    do_sth_success_task(real_func, args=task["args"],
-                                        kwargs=task["kwargs"])
+                    self.success_task(real_func, task)
                 except:
                     traceback.print_exc()
                     self.logger.error(
                         "Fail to consume the task : %s ,parameter : %s -- %s " % (
                             task["func_name"], task["args"], task["kwargs"]))
-                    do_sth_fail_task(real_func, args=task["args"],
-                                     kwargs=task["kwargs"])
+                    self.fail_task(real_func, task)
                 finally:
-                    do_sth_after_task(real_func, args=task["args"],
-                                      kwargs=task["kwargs"])
+                    self.do_after_task(real_func, task)
                     self.logger.info(
                         "The task : %s ,parameter : %s -- %s Finished!" % (
                             task["func_name"], task["args"], task["kwargs"]))
