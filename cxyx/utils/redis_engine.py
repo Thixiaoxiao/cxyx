@@ -27,7 +27,7 @@ class RedisEngine:
                 startup_nodes = [
                     {"host": host, "port": port} for host, port in zip(redis_host, redis_port)
                 ]
-            self.redis_eng = StrictRedisCluster(startup_nodes=startup_nodes, decode_responses=True, password=redis_password)
+            self.redis_eng = StrictRedisCluster(startup_nodes=startup_nodes, password=redis_password)
 
     def lpush(self, key, val):
         self.redis_eng.lpush(key, val)
